@@ -2,11 +2,11 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Fleet Test</title>
+  <title>Car Fleet</title>
 </head>
 <body>
 
-<h1>Car Fleet</h1>
+<h1>Available Cars</h1>
 <div id="fleet"></div>
 
 <script>
@@ -22,10 +22,23 @@ function escHtml(str) {
   });
 }
 
-async function loadFleet() {
-  const res = await fetch("fleet.json");
-  const cars = await res.json();
-  renderFleet(cars);
+function renderFleet(cars) {
+  const container = document.getElementById("fleet");
+
+  const availableCars = cars.filter(car => car.available);
+
+  if (availableCars.length === 0) {
+    container.innerHTML = "<p>No cars available</p>";
+    return;
+  }
+
+  container.innerHTML = availableCars.map(car => `
+    <div style="border:1px solid black;padding:10px;margin:10px;">
+      <h3>${escHtml(car.name)}</h3>
+      <p>Category: ${escHtml(car.category)}</p>
+      <strong>${car.price} MAD/day</strong>
+    </div>
+  `).join("");
 }
 
 function loadFleet() {
@@ -52,5 +65,4 @@ document.addEventListener("DOMContentLoaded", loadFleet);
 </script>
 
 </body>
-
 </html>
