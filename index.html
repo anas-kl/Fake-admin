@@ -28,22 +28,29 @@ async function loadFleet() {
   renderFleet(cars);
 }
 
-function renderFleet(cars) {
-  const container = document.getElementById("fleet");
-  container.innerHTML = cars
-    .filter(car => car.available)
-    .map(car => `
-      <div style="border:1px solid #000;padding:10px;margin:10px;">
-        <h3>${escHtml(car.name)}</h3>
-        <p>${escHtml(car.category)}</p>
-        <strong>${car.price} MAD/day</strong>
-      </div>
-    `)
-    .join("");
+function loadFleet() {
+  const data = localStorage.getItem("fleet");
+
+  if (!data) {
+    const defaultFleet = [
+      {
+        id: 1,
+        name: "Dacia Logan",
+        category: "Economy",
+        price: 250,
+        available: true
+      }
+    ];
+    localStorage.setItem("fleet", JSON.stringify(defaultFleet));
+    renderFleet(defaultFleet);
+  } else {
+    renderFleet(JSON.parse(data));
+  }
 }
 
 document.addEventListener("DOMContentLoaded", loadFleet);
 </script>
 
 </body>
+
 </html>
