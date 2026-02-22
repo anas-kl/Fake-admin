@@ -1,9 +1,24 @@
 [
   {
     "id": 1,
-    "name": "Dacia Logan",
-    "category": "Economy",
-    "price": 250,
-    "available": true
+    "brand": "Dacia",
+    "model": "Sandero",
+    "year": 2023,
+    "price": 300,
+    "category": "economique",
+    "image": "https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=600",
+    "features_fr": "Climatisation, Bluetooth, 5 places",
+    "features_en": "Air Conditioning, Bluetooth, 5 Seats"
+  },
+  {
+    "id": 2,
+    "brand": "Mercedes-Benz",
+    "model": "Classe C",
+    "year": 2024,
+    "price": 1200,
+    "category": "luxe",
+    "image": "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=600",
+    "features_fr": "Sièges cuir, GPS, Prestige",
+    "features_en": "Leather Seats, GPS, Prestige"
   }
 ]
