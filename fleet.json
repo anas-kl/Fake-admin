@@ -31,5 +31,16 @@
     "image": "https://res.cloudinary.com/dut4finmu/image/upload/v1771797070/usf-cars/zm6snp7asdp4pi932jkj.jpg",
     "features_fr": "FR,dd",
     "features_en": "en,dd"
+  },
+  {
+    "id": 1771799602094,
+    "brand": "AAA",
+    "model": "HHH",
+    "year": 2222,
+    "price": 129,
+    "category": "luxe",
+    "image": "https://res.cloudinary.com/dut4finmu/image/upload/v1771799593/usf-cars/pmxxungtiix4yqojup7n.png",
+    "features_fr": "GPD",
+    "features_en": "GPDEN"
   }
 ]
