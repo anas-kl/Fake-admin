@@ -2,11 +2,11 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Admin Test</title>
+  <title>Admin Panel</title>
 </head>
 <body>
 
-<h1>Fake Admin</h1>
+<h1>Admin Dashboard</h1>
 
 <h3>Add New Car</h3>
 
@@ -15,35 +15,101 @@
 <input id="price" type="number" placeholder="Price"><br><br>
 
 <button onclick="addCar()">Add Car</button>
-<button onclick="generateJSON()">Generate JSON</button>
 
-<h3>Generated JSON</h3>
-<pre id="output"></pre>
+<h3>Current Cars</h3>
+<div id="carList"></div>
 
 <script>
 let fleet = [];
 
-async function loadFleet() {
-  const res = await fetch("fleet.json");
-  fleet = await res.json();
+function escHtml(str) {
+  return str.replace(/[&<>"']/g, function(m) {
+    return {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[m];
+  });
+}
+
+function loadFleet() {
+  const data = localStorage.getItem("fleet");
+  fleet = data ? JSON.parse(data) : [];
+  renderCars();
+}
+
+function saveFleet() {
+  localStorage.setItem("fleet", JSON.stringify(fleet));
 }
 
 function addCar() {
+  const name = document.getElementById("name").value.trim();
+  const category = document.getElementById("category").value.trim();
+  const price = Number(document.getElementById("price").value);
+
+  if (!name || !category || !price) {
+    alert("All fields are required");
+    return;
+  }
+
   const newCar = {
     id: Date.now(),
-    name: document.getElementById("name").value,
-    category: document.getElementById("category").value,
-    price: Number(document.getElementById("price").value),
+    name,
+    category,
+    price,
     available: true
   };
 
   fleet.push(newCar);
-  alert("Car added (not saved yet)");
+  saveFleet();
+  renderCars();
+
+  document.getElementById("name").value = "";
+  document.getElementById("category").value = "";
+  document.getElementById("price").value = "";
+
+  alert("Car saved successfully!");
 }
 
-function generateJSON() {
-  const json = JSON.stringify(fleet, null, 2);
-  document.getElementById("output").textContent = json;
+function deleteCar(id) {
+  fleet = fleet.filter(car => car.id !== id);
+  saveFleet();
+  renderCars();
+}
+
+function toggleAvailability(id) {
+  const car = fleet.find(car => car.id === id);
+  if (car) {
+    car.available = !car.available;
+    saveFleet();
+    renderCars();
+  }
+}
+
+function renderCars() {
+  const container = document.getElementById("carList");
+
+  if (fleet.length === 0) {
+    container.innerHTML = "<p>No cars added yet</p>";
+    return;
+  }
+
+  container.innerHTML = fleet.map(car => `
+    <div style="border:1px solid gray;padding:10px;margin:10px;">
+      <strong>${escHtml(car.name)}</strong><br>
+      Category: ${escHtml(car.category)}<br>
+      Price: ${car.price} MAD<br>
+      Available: ${car.available ? "Yes" : "No"}<br><br>
+      <button onclick="toggleAvailability(${car.id})">
+        Toggle Availability
+      </button>
+      <button onclick="deleteCar(${car.id})">
+        Delete
+      </button>
+    </div>
+  `).join("");
 }
 
 document.addEventListener("DOMContentLoaded", loadFleet);
