@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Fleet Test</title>
+</head>
+<body>
+
+<h1>Car Fleet</h1>
+<div id="fleet"></div>
+
+<script>
+function escHtml(str) {
+  return str.replace(/[&<>"']/g, function(m) {
+    return {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[m];
+  });
+}
+
+async function loadFleet() {
+  const res = await fetch("fleet.json");
+  const cars = await res.json();
+  renderFleet(cars);
+}
+
+function renderFleet(cars) {
+  const container = document.getElementById("fleet");
+  container.innerHTML = cars
+    .filter(car => car.available)
+    .map(car => `
+      <div style="border:1px solid #000;padding:10px;margin:10px;">
+        <h3>${escHtml(car.name)}</h3>
+        <p>${escHtml(car.category)}</p>
+        <strong>${car.price} MAD/day</strong>
+      </div>
+    `)
+    .join("");
+}
+
+document.addEventListener("DOMContentLoaded", loadFleet);
+</script>
+
+</body>
+</html>

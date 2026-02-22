@@ -1,0 +1,9 @@
+[
+  {
+    "id": 1,
+    "name": "Dacia Logan",
+    "category": "Economy",
+    "price": 250,
+    "available": true
+  }
+]

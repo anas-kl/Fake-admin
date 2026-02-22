@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Test</title>
+</head>
+<body>
+
+<h1>Fake Admin</h1>
+
+<h3>Add New Car</h3>
+
+<input id="name" placeholder="Car Name"><br><br>
+<input id="category" placeholder="Category"><br><br>
+<input id="price" type="number" placeholder="Price"><br><br>
+
+<button onclick="addCar()">Add Car</button>
+<button onclick="generateJSON()">Generate JSON</button>
+
+<h3>Generated JSON</h3>
+<pre id="output"></pre>
+
+<script>
+let fleet = [];
+
+async function loadFleet() {
+  const res = await fetch("fleet.json");
+  fleet = await res.json();
+}
+
+function addCar() {
+  const newCar = {
+    id: Date.now(),
+    name: document.getElementById("name").value,
+    category: document.getElementById("category").value,
+    price: Number(document.getElementById("price").value),
+    available: true
+  };
+
+  fleet.push(newCar);
+  alert("Car added (not saved yet)");
+}
+
+function generateJSON() {
+  const json = JSON.stringify(fleet, null, 2);
+  document.getElementById("output").textContent = json;
+}
+
+document.addEventListener("DOMContentLoaded", loadFleet);
+</script>
+
+</body>
+</html>
