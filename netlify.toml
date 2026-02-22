@@ -1,0 +1,12 @@
+# netlify.toml
+# Tells Netlify where to find the serverless functions
+
+[build]
+  functions = "netlify/functions"
+  publish   = "."          # root folder is the website
+
+# Optional: redirect /admin to admin.html cleanly
+[[redirects]]
+  from   = "/admin"
+  to     = "/admin.html"
+  status = 200
