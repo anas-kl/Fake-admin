@@ -5,64 +5,57 @@
   <title>Car Fleet</title>
 </head>
 <body>
-
 <h1>Available Cars</h1>
-<div id="fleet"></div>
+<div id="fleet">Loading...</div>
 
 <script>
 function escHtml(str) {
+  if (typeof str !== 'string') return String(str);
   return str.replace(/[&<>"']/g, function(m) {
-    return {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    }[m];
+    return { "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m];
   });
 }
 
 function renderFleet(cars) {
   const container = document.getElementById("fleet");
 
-  const availableCars = cars.filter(car => car.available);
-
-  if (availableCars.length === 0) {
-    container.innerHTML = "<p>No cars available</p>";
+  if (!cars || cars.length === 0) {
+    container.innerHTML = "<p>No cars available.</p>";
     return;
   }
 
-  container.innerHTML = availableCars.map(car => `
-    <div style="border:1px solid black;padding:10px;margin:10px;">
-      <h3>${escHtml(car.name)}</h3>
+  container.innerHTML = cars.map(car => `
+    <div style="border:1px solid #ccc; padding:16px; margin:12px; border-radius:8px;">
+      <img src="${escHtml(car.image)}" alt="${escHtml(car.brand)} ${escHtml(car.model)}"
+           style="width:100%; max-width:400px; height:200px; object-fit:cover; border-radius:6px;">
+      <h3>${escHtml(car.brand)} ${escHtml(car.model)} ${escHtml(String(car.year))}</h3>
       <p>Category: ${escHtml(car.category)}</p>
-      <strong>${car.price} MAD/day</strong>
+      <p>Features: ${escHtml(car.features_fr)}</p>
+      <strong>${escHtml(String(car.price))} MAD/day</strong>
     </div>
   `).join("");
 }
 
-function loadFleet() {
-  const data = localStorage.getItem("fleet");
+// ── THIS is the only change that matters ──
+// Reads from fleet.json on the server, NOT localStorage
+async function loadFleet() {
+  try {
+    const response = await fetch('/fleet.json');
 
-  if (!data) {
-    const defaultFleet = [
-      {
-        id: 1,
-        name: "Dacia Logan",
-        category: "Economy",
-        price: 250,
-        available: true
-      }
-    ];
-    localStorage.setItem("fleet", JSON.stringify(defaultFleet));
-    renderFleet(defaultFleet);
-  } else {
-    renderFleet(JSON.parse(data));
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const cars = await response.json();
+    renderFleet(cars);
+
+  } catch (err) {
+    console.error('Failed to load fleet:', err);
+    document.getElementById('fleet').innerHTML = '<p>Error loading cars. Check console.</p>';
   }
 }
 
 document.addEventListener("DOMContentLoaded", loadFleet);
 </script>
-
 </body>
 </html>
