@@ -20,5 +20,16 @@
     "image": "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=600",
     "features_fr": "Sièges cuir, GPS, Prestige",
     "features_en": "Leather Seats, GPS, Prestige"
+  },
+  {
+    "id": 1771797079812,
+    "brand": "MARQUE1",
+    "model": "CLASS MOD1",
+    "year": 1222,
+    "price": 222,
+    "category": "luxe",
+    "image": "https://res.cloudinary.com/dut4finmu/image/upload/v1771797070/usf-cars/zm6snp7asdp4pi932jkj.jpg",
+    "features_fr": "FR,dd",
+    "features_en": "en,dd"
   }
 ]
