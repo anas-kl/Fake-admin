@@ -1,119 +1,377 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>USF Admin — Ajouter une voiture</title>
+  <style>
+    /* ── Very simple admin styles ── */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f4f4f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      width: 100%;
+      max-width: 560px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #C9A84C;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      color: #1C1C1E;
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #6B6760;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+      margin-top: 16px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid #e0ddd8;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      color: #1C1C1E;
+      background: white;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #C9A84C;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Image upload zone */
+    .upload-zone {
+      border: 2px dashed #e0ddd8;
+      border-radius: 10px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .upload-zone:hover   { border-color: #C9A84C; background: #fdf9f0; }
+    .upload-zone input   { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .upload-zone .icon   { font-size: 2rem; margin-bottom: 8px; }
+    .upload-zone p       { font-size: 0.85rem; color: #6B6760; }
+    .upload-zone.has-img { border-color: #5A9A3A; background: #f0f9f0; }
+
+    #image-preview {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    /* Password section */
+    #login-section { }
+    #form-section   { display: none; }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      margin-top: 24px;
+      transition: all 0.2s;
+    }
+    .btn-gold  { background: #C9A84C; color: #1C1C1E; }
+    .btn-gold:hover  { background: #E2C47A; }
+    .btn-dark  { background: #1C1C1E; color: white; }
+    .btn-dark:hover  { background: #3A3A3F; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Status messages */
+    .msg {
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-top: 16px;
+      display: none;
+    }
+    .msg.success { background: #ecfdf5; color: #166534; border: 1px solid #bbf7d0; display: block; }
+    .msg.error   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; display: block; }
+    .msg.loading { background: #f0f9ff; color: #075985; border: 1px solid #bae6fd; display: block; }
+
+    /* Uploading progress */
+    .upload-status { font-size: 0.8rem; color: #6B6760; margin-top: 6px; }
+
+    .divider { border: none; border-top: 1px solid #f2f0eb; margin: 20px 0; }
+  </style>
 </head>
 <body>
 
-<h1>Admin Dashboard</h1>
+<div class="card">
+  <div class="logo">USF LUXURY CARS</div>
 
-<h3>Add New Car</h3>
+  <!-- ── STEP 1: Password ─────────────────────────────── -->
+  <div id="login-section">
+    <h1>Accès Admin</h1>
+    <label for="password">Mot de passe</label>
+    <input type="password" id="password" placeholder="Entrez le mot de passe" autocomplete="current-password">
+    <button class="btn btn-gold" onclick="checkPassword()">Entrer</button>
+    <div id="login-msg" class="msg"></div>
+  </div>
 
-<input id="name" placeholder="Car Name"><br><br>
-<input id="category" placeholder="Category"><br><br>
-<input id="price" type="number" placeholder="Price"><br><br>
+  <!-- ── STEP 2: Add car form ──────────────────────────── -->
+  <div id="form-section">
+    <h1>Ajouter une voiture</h1>
 
-<button onclick="addCar()">Add Car</button>
+    <div class="row">
+      <div>
+        <label for="brand">Marque</label>
+        <input type="text" id="brand" placeholder="Mercedes-Benz">
+      </div>
+      <div>
+        <label for="model">Modèle</label>
+        <input type="text" id="model" placeholder="Classe C">
+      </div>
+    </div>
 
-<h3>Current Cars</h3>
-<div id="carList"></div>
+    <div class="row">
+      <div>
+        <label for="year">Année</label>
+        <input type="number" id="year" placeholder="2024" min="2015" max="2030">
+      </div>
+      <div>
+        <label for="price">Prix DH/jour</label>
+        <input type="number" id="price" placeholder="1200" min="100">
+      </div>
+    </div>
+
+    <label for="category">Catégorie</label>
+    <select id="category">
+      <option value="economique">💰 Économique</option>
+      <option value="standard">🚙 Standard</option>
+      <option value="premium">⭐ Premium</option>
+      <option value="luxe" selected>💎 Luxe</option>
+    </select>
+
+    <label>Photo de la voiture</label>
+    <div class="upload-zone" id="upload-zone">
+      <input type="file" id="image-input" accept="image/*" onchange="handleImageSelect(event)">
+      <div class="icon">📷</div>
+      <p>Cliquez ou glissez une photo ici</p>
+      <p class="upload-status" id="upload-status"></p>
+    </div>
+    <img id="image-preview" alt="Aperçu">
+
+    <hr class="divider">
+
+    <label for="features-fr">Caractéristiques (Français)</label>
+    <input type="text" id="features-fr" placeholder="Sièges cuir, GPS, Climatisation">
+
+    <label for="features-en">Caractéristiques (Anglais)</label>
+    <input type="text" id="features-en" placeholder="Leather Seats, GPS, Air Conditioning">
+
+    <button class="btn btn-dark" id="submit-btn" onclick="submitCar()">
+      Publier sur le site
+    </button>
+
+    <div id="form-msg" class="msg"></div>
+  </div>
+</div>
 
 <script>
-let fleet = [];
+  // ─────────────────────────────────────────────────────────
+  // CONFIG — change these two lines
+  // ─────────────────────────────────────────────────────────
+  const CLOUDINARY_CLOUD_NAME = 'YOUR_CLOUD_NAME'; // from cloudinary.com dashboard
+  const CLOUDINARY_UPLOAD_PRESET = 'usf_cars';      // create unsigned preset in Cloudinary settings
 
-function escHtml(str) {
-  return str.replace(/[&<>"']/g, function(m) {
-    return {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    }[m];
+  // ─────────────────────────────────────────────────────────
+  // Password check (simple — just gates the UI)
+  // Real security is in the Netlify function
+  // ─────────────────────────────────────────────────────────
+  let adminPassword = '';
+
+  function checkPassword() {
+    const pwd = document.getElementById('password').value.trim();
+    if (!pwd) {
+      showMsg('login-msg', 'error', 'Entrez le mot de passe.');
+      return;
+    }
+    // We don't validate here — the Netlify function will reject if wrong
+    adminPassword = pwd;
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('form-section').style.display  = 'block';
+  }
+
+  // Allow Enter key on password field
+  document.getElementById('password').addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkPassword();
   });
-}
 
-function loadFleet() {
-  const data = localStorage.getItem("fleet");
-  fleet = data ? JSON.parse(data) : [];
-  renderCars();
-}
+  // ─────────────────────────────────────────────────────────
+  // Image upload to Cloudinary
+  // ─────────────────────────────────────────────────────────
+  let uploadedImageUrl = '';
 
-function saveFleet() {
-  localStorage.setItem("fleet", JSON.stringify(fleet));
-}
+  async function handleImageSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-function addCar() {
-  const name = document.getElementById("name").value.trim();
-  const category = document.getElementById("category").value.trim();
-  const price = Number(document.getElementById("price").value);
+    // Show local preview immediately
+    const reader = new FileReader();
+    reader.onload = e => {
+      const preview = document.getElementById('image-preview');
+      preview.src   = e.target.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
 
-  if (!name || !category || !price) {
-    alert("All fields are required");
-    return;
+    // Upload to Cloudinary
+    document.getElementById('upload-status').textContent = 'Upload en cours...';
+    document.getElementById('upload-zone').classList.add('has-img');
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    formData.append('folder', 'usf-cars'); // optional folder in Cloudinary
+
+    try {
+      const res  = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+        method: 'POST',
+        body:   formData
+      });
+      const data = await res.json();
+
+      if (data.secure_url) {
+        uploadedImageUrl = data.secure_url;
+        document.getElementById('upload-status').textContent = '✅ Photo uploadée avec succès';
+      } else {
+        document.getElementById('upload-status').textContent = '❌ Erreur upload';
+      }
+    } catch (err) {
+      document.getElementById('upload-status').textContent = '❌ Erreur réseau';
+      console.error(err);
+    }
   }
 
-  const newCar = {
-    id: Date.now(),
-    name,
-    category,
-    price,
-    available: true
-  };
+  // ─────────────────────────────────────────────────────────
+  // Submit car to Netlify Function → GitHub
+  // ─────────────────────────────────────────────────────────
+  async function submitCar() {
+    const brand       = document.getElementById('brand').value.trim();
+    const model       = document.getElementById('model').value.trim();
+    const year        = document.getElementById('year').value.trim();
+    const price       = document.getElementById('price').value.trim();
+    const category    = document.getElementById('category').value;
+    const features_fr = document.getElementById('features-fr').value.trim();
+    const features_en = document.getElementById('features-en').value.trim();
 
-  fleet.push(newCar);
-  saveFleet();
-  renderCars();
+    // Basic validation
+    if (!brand || !model || !year || !price) {
+      showMsg('form-msg', 'error', 'Remplissez tous les champs obligatoires.');
+      return;
+    }
+    if (!uploadedImageUrl) {
+      showMsg('form-msg', 'error', 'Uploadez une photo de la voiture.');
+      return;
+    }
 
-  document.getElementById("name").value = "";
-  document.getElementById("category").value = "";
-  document.getElementById("price").value = "";
+    // Disable button during request
+    const btn = document.getElementById('submit-btn');
+    btn.disabled    = true;
+    btn.textContent = 'Publication en cours...';
+    showMsg('form-msg', 'loading', '⏳ Enregistrement sur GitHub...');
 
-  alert("Car saved successfully!");
-}
+    try {
+      // Call our Netlify Function (not GitHub directly!)
+      const response = await fetch('/.netlify/functions/add-car', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({
+          password:    adminPassword, // validated server-side
+          brand,
+          model,
+          year,
+          price,
+          category,
+          image:       uploadedImageUrl,
+          features_fr,
+          features_en
+        })
+      });
 
-function deleteCar(id) {
-  fleet = fleet.filter(car => car.id !== id);
-  saveFleet();
-  renderCars();
-}
+      const result = await response.json();
 
-function toggleAvailability(id) {
-  const car = fleet.find(car => car.id === id);
-  if (car) {
-    car.available = !car.available;
-    saveFleet();
-    renderCars();
+      if (response.ok && result.success) {
+        showMsg('form-msg', 'success',
+          `✅ ${brand} ${model} ${year} ajouté avec succès! Le site se met à jour dans ~1 minute.`
+        );
+        resetForm();
+      } else {
+        showMsg('form-msg', 'error', `❌ Erreur: ${result.error || 'Réessayez.'}`);
+      }
+    } catch (err) {
+      showMsg('form-msg', 'error', '❌ Erreur réseau. Vérifiez votre connexion.');
+      console.error(err);
+    } finally {
+      btn.disabled    = false;
+      btn.textContent = 'Publier sur le site';
+    }
   }
-}
 
-function renderCars() {
-  const container = document.getElementById("carList");
-
-  if (fleet.length === 0) {
-    container.innerHTML = "<p>No cars added yet</p>";
-    return;
+  // ─────────────────────────────────────────────────────────
+  // Helpers
+  // ─────────────────────────────────────────────────────────
+  function showMsg(id, type, text) {
+    const el      = document.getElementById(id);
+    el.className  = `msg ${type}`;
+    el.textContent = text;
   }
 
-  container.innerHTML = fleet.map(car => `
-    <div style="border:1px solid gray;padding:10px;margin:10px;">
-      <strong>${escHtml(car.name)}</strong><br>
-      Category: ${escHtml(car.category)}<br>
-      Price: ${car.price} MAD<br>
-      Available: ${car.available ? "Yes" : "No"}<br><br>
-      <button onclick="toggleAvailability(${car.id})">
-        Toggle Availability
-      </button>
-      <button onclick="deleteCar(${car.id})">
-        Delete
-      </button>
-    </div>
-  `).join("");
-}
-
-document.addEventListener("DOMContentLoaded", loadFleet);
+  function resetForm() {
+    ['brand','model','year','price','features-fr','features-en'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('category').value       = 'luxe';
+    document.getElementById('image-preview').style.display = 'none';
+    document.getElementById('upload-status').textContent   = '';
+    document.getElementById('upload-zone').classList.remove('has-img');
+    uploadedImageUrl = '';
+  }
 </script>
-
 </body>
 </html>
